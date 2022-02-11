@@ -2,8 +2,8 @@
 	<NavWizard :datawizard="wizards" @step="wizardNav" />
 	<Form v-if="wizards.length" class="entry-wizard-wrapper">
 		<BirthWizard :datawizard="wizards[0]" :className="{ 'entry-wizard__active':wizards[0].isActive }" @step="wizardStep" />
-		<PackageWizard :datawizard="wizards[1]" :className="{ 'entry-wizard__active':wizards[1].isActive }" @step="wizardStep" />
-		<IdentityWizard :datawizard="wizards[2]" :className="{ 'entry-wizard__active':wizards[2].isActive }" @step="wizardStep" />
+		<PackageWizard :datawizard="wizards[1]" :className="{ 'entry-wizard__active':wizards[1].isActive }" @step="wizardStep" @stepPrev="wizardStepPrev" />
+		<IdentityWizard :datawizard="wizards[2]" :className="{ 'entry-wizard__active':wizards[2].isActive }" @step="wizardStep" @stepPrev="wizardStepPrev" />
 		<SuccessWizard :datawizard="wizards[3]" :className="{ 'entry-wizard__active':wizards[3].isActive }" @step="wizardStep" />
 	</Form>
 </template>
@@ -59,17 +59,16 @@
 						isActive: false,
 						isDone: false
 					},
-				]
+				],
+				data_crm: {}
 			}
 		},
 		methods: {
 			wizardNav(step) {
-				const wizardCurrent = this.wizards.find(wizard => wizard.isActive);
+				const wizardCurrent = this.wizards.find(wizard => wizard.isActive)
 
-				console.log(wizardCurrent)
-
-				if( this.wizards[step.id].isDone !== true && wizardCurrent.isDone !== true ) {
-					return false
+				if( step.id > wizardCurrent.id ) {
+					return wizardCurrent.isDone
 				}
 
 				this.wizards.forEach(wizard => {
@@ -79,6 +78,10 @@
 						wizard.isActive = true
 					}
 				})
+			},
+			wizardStepPrev(step) {
+				this.wizards[step.id].isActive = false
+				this.wizards[step.id - 1].isActive = true
 			},
 			wizardStep(step) {
 				this.wizards[step.id].isDone = true
@@ -118,12 +121,24 @@
 	}
 
 	:deep(.wizard-sidebar) {
-		@apply w-360px border border-gray-300 rounded-10px;
+		@apply w-360px;
+	}
+
+	:deep(.box-sidebar) {
+		@apply w-full border border-gray-300 rounded-10px;
 		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+	}
+	
+	:deep(.cta-prev-wizard) {
+		@apply cta-secondary cta-iconleft;
+	}
+
+	:deep(.cta-prev-wizard:after) {
+		background-image: url(/assets/icons/icon-chevronblack-left.svg);
 	}
 
 	:deep(.cta-submit-wizard) {
-		@apply cta-fill-pinks;
+		@apply cta-primary cta-iconright;
 	}
 
 	:deep(.cta-submit-wizard:after) {

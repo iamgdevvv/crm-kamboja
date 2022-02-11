@@ -30,37 +30,16 @@
 			</ul>
 		</article>
 		<aside class="wizard-sidebar">
-			<div class="package-branding">
-				<span class="package-labelchoosen">Paket yang dipilih:</span>
-				<div class="package-name">
-					<Image :src="choosenPackage.icon" className="icon-package" />
-					<span class="title-package">{{ choosenPackage.label }}</span>
-				</div>
-			</div>
-			<div class="package-detail">
-				<ul class="package-info">
-					<li :class="{ 'include-package': choosenPackage.features.includes('transportasi-jenazah') }">Pengurusan transportasi jenazah</li>
-					<li :class="{ 'include-package': choosenPackage.features.includes('rumah-duka') }">Pengurusan rumah duka</li>
-					<li :class="{ 'include-package': choosenPackage.features.includes('akte-kematian') }">Pengurusan akte kematian</li>
-					<li :class="{ 'include-package': choosenPackage.features.includes('reservasi-tpu-tps') }">Reservasi tempat pemakaman (TPU/TPS)</li>
-				</ul>
-				<div class="package-action">
-					<button class="cta-prev-wizard" @click.prevent="prevWizard">Kembali</button>
-					<button class="cta-submit-wizard" :class="{ 'prevent-submit':packageInvalid }" @click.prevent="submitPackage">Selanjutnya</button>
-				</div>
-			</div>
-			<div class="payment-info">
-				<span class="label-payment-info">Menerima pembayaran melalui:</span>
-				<LogoPayments />
-			</div>
+			<BoxPackage className="box-sidebar" :package="choosen_package" :wizard="datawizard" @prev="prevWizard" @submit="submitPackage" />
 		</aside>
 	</section>
 </template>
 
 
 <script>
+	import { store } from '../stores'
+	import BoxPackage from '../components/BoxPackage.vue'
 	import Image from '../components/Image.vue'
-	import LogoPayments from '../components/LogoPayments.vue'
 
 	export default {
 		name: 'PackageWizard',
@@ -70,7 +49,7 @@
 		},
 		components: {
 			Image,
-			LogoPayments
+			BoxPackage
 		},
 		data() {
 			return {
@@ -81,9 +60,11 @@
 						icon: '/assets/icons/icon-amanblack.svg',
 						currency: {
 							label: 'Rp',
+							iso: 'IDR',
 							locale: 'id-ID'
 						},
 						price: 25_000_000,
+						instalment_monthly: 38_000,
 						features: [
 							'transportasi-jenazah',
 						],
@@ -95,9 +76,11 @@
 						icon: '/assets/icons/icon-nyamanblack.svg',
 						currency: {
 							label: 'Rp',
+							iso: 'IDR',
 							locale: 'id-ID'
 						},
 						price: 50_000_000,
+						instalment_monthly: 68_000,
 						features: [
 							'transportasi-jenazah',
 							'rumah-duka',
@@ -111,9 +94,11 @@
 						icon: '/assets/icons/icon-tentramblack.svg',
 						currency: {
 							label: 'Rp',
+							iso: 'IDR',
 							locale: 'id-ID'
 						},
 						price: 100_000_000,
+						instalment_monthly: 88_000,
 						features: [
 							'transportasi-jenazah',
 							'rumah-duka',
@@ -123,7 +108,7 @@
 						popular: false
 					},
 				],
-				choosenPackage: {},
+				choosen_package: {},
 				form_package: {
 					your_package: 'paket-aman',
 				},
@@ -134,15 +119,21 @@
 				return this.form_package.your_package === value
 			},
 			setPackage(data) {
-				alert('Back to be true')
+				store.commit('choosePackage', data)
+				store.commit('setCRM', {
+					your_package: data.value
+				})
 			},
-			submitPackage(e) {
-				this.$emit("step", this.datawizard);
+			prevWizard() {
+				this.$emit('stepPrev', this.datawizard)
+			},
+			submitPackage() {
+				this.$emit('step', this.datawizard)
 			}
 		},
 		created() {
 			// SET DEFAULT CHOOSEN PACKAGE
-			this.choosenPackage = this.dataPackages[0]
+			store.commit('choosePackage', this.dataPackages[0])
 		},
 	}
 </script>
@@ -179,6 +170,13 @@
 		&.package--selected:after {
 			@apply bg-pink-500 shadow-pink-500;
 		}
+
+		&.package--selected {
+			.package-info .include-package {	
+				@apply before:(bg-pink-500 border-pink-500);
+			}
+		}
+
 
 		input {
 			@apply absolute top-0 left-0 z-10 w-full h-full opacity-0;
@@ -229,9 +227,9 @@
 		@apply pl-0 list-none;
 
 		li {
-			@apply relative block pl-36px first-letter:capitalize not-last:mt-16px;
-			@apply before:(content-a text-0px absolute top-0 left-0 w-24px h-24px bg-white border-2 border-gray-300 rounded-full bg-center bg-no-repeat);
-			
+			@apply relative block pl-36px first-letter:capitalize not-first:mt-16px;
+			@apply before:(content-a text-0px absolute top-0 left-0 w-24px h-24px bg-white border-2 border-gray-300 rounded-full bg-center bg-no-repeat transition duration-300);
+
 			&::before {
 				background-size: 10px auto, contain;
 				background-image: url(/assets/icons/icon-timesgray300.svg);
@@ -245,48 +243,6 @@
 					background-image: url(/assets/icons/icon-checkwhite.svg);
 				}
 			}
-		}
-	}
-
-	.wizard-sidebar {
-		.package-labelchoosen {
-			@apply inline-block mr-8px;
-		}
-
-		.package-branding {
-			@apply justify-center p-20px border-b border-gray-300;
-		}
-
-		.package-info {
-			@apply px-2px;
-
-			li {
-				@apply pl-26px pt-2px text-14px;
-				@apply before:(w-16px h-16px);
-
-				&:before {
-					background-size: 8px auto, contain;
-				}
-			}
-		}
-
-		.package-action {
-			@apply flexs mt-44px;
-		}
-
-		.payment-info {
-			@apply px-30px py-20px border-t border-gray-300;
-		}
-	}
-
-	.package-detail {
-		@apply pt-32px pb-40px px-30px;
-	}
-
-	.payment-info {
-		
-		.label-payment-info {
-			@apply block mb-20px text-16px text-center;
 		}
 	}
 </style>

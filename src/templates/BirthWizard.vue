@@ -7,30 +7,32 @@
 		<article class="wizard-content">
 			<fieldset class="form-group form-group-fieldset">
 				<legend>Tanggal Lahir <span class="icon-required">*</span></legend>
-				<div class="fieldset-item">
-					<v-select v-model.number="form_birth.your_date" placeholder="Tanggal" :options="dataDate" :value="form_birth.your_date" @close="setDateValue(form_birth.your_date, 'your_date')"></v-select>
+				<div class="field-item">
+					<v-select v-model="form_birth.your_date" placeholder="Tanggal" label="label" :options="data_date" :value="form_birth.your_date" @close="setDateValue(form_birth.your_date, 'your_date')"></v-select>
 				</div>
-				<div class="fieldset-item">
-					<v-select v-model.number="form_birth.your_month" placeholder="Bulan" :options="dataMonth" :value="form_birth.your_month" @close="setDateValue(form_birth.your_month, 'your_month')"></v-select>
+				<div class="field-item">
+					<v-select v-model.number="form_birth.your_month" placeholder="Bulan" label="label" :options="data_month" :value="form_birth.your_month" @close="setDateValue(form_birth.your_month, 'your_month')"></v-select>
 				</div>
-				<div class="fieldset-item">
-					<v-select v-model.number="form_birth.your_year" placeholder="Tahun" :options="dataYear" :value="form_birth.your_year" @close="setDateValue(form_birth.your_year, 'your_year')"></v-select>
+				<div class="field-item">
+					<v-select v-model.number="form_birth.your_year" placeholder="Tahun" label="label" :options="data_year" :value="form_birth.your_year" @close="setDateValue(form_birth.your_year, 'your_year')"></v-select>
 				</div>
 			</fieldset>
-			<span class="preview-your-date">Usia anda {{ userAge || '0' }} tahun</span>
+			<span class="preview-your-date">Usia anda {{ user_age || '0' }} tahun</span>
 			{{ dataCalendar }}
 		</article>
 		<aside class="wizard-sidebar">
-			<button class="cta-submit-wizard" :class="{ 'prevent-submit':birthInvalid }" @click.prevent="submitBirth">Selanjutnya</button>
+			<div class="box-sidebar">
+				<button class="cta-submit-wizard" :class="{ 'prevent-submit':birth_invalid }" @click.prevent="submitBirth">Selanjutnya</button>
+			</div>
 		</aside>
 	</section>
 </template>
 
 
 <script>
+	import { store  } from '../stores'
 	import dateJson from '../data/date.json'
 	import monthJson from '../data/month.json'
-	
 	
 	const yearJson = []
 
@@ -42,6 +44,8 @@
 			label: year
 		})
 	}
+
+	console.log(yearJson)
 
 	export default {
 		name: 'BirthWizard',
@@ -56,49 +60,90 @@
 					your_month: 0,
 					your_year: 0,
 				},
-				dataDate: dateJson,
-				dataMonth: monthJson,
-				dataYear: yearJson,
-				userAge : 0,
-				birthInvalid: true
+				data_date: dateJson,
+				data_month: monthJson,
+				data_year: yearJson,
+				user_age : 0,
+				birth_invalid: true
+			}
+		},
+		computed: {
+			date_crm() {
+				return this.$store.state.data_crm
 			}
 		},
 		methods: {
 			setDateValue(data = {}, key) {
-				this.form_birth[key] = data?.value || 0
+				// SET DATE CRM
+				store.commit('setCRM', {
+					[key]: data?.value || 0
+				})
 
-				if( this.form_birth.your_date !== 0 && this.form_birth.your_month !== 0 && this.form_birth.your_year !== 0 ) {
+				const data_form_birth = this.form_birth
+				const year_leap = data_form_birth.your_year?.isLeap || false
+
+				console.log('data_form_birth.your_date : ' + data_form_birth.your_date)
+
+				// VALIDATE MONTH FIELD
+				if( data_form_birth.your_month !== null && data_form_birth.your_month !== 0 ) {
+					let month_days = data_form_birth.your_month.days
+					this.data_date = dateJson.filter(item => item.value <= month_days)
+
+					// IF MONTH HAS LESS DAYS THAN DATE
+					if( year_leap && data_form_birth.your_month.value === 2 ) {
+						this.data_date = dateJson.filter(item => item.value <= 29)
+					} else if( month_days < data_form_birth.your_date?.value ) {
+						this.form_birth.your_date = 0
+						store.commit('setCRM', {
+							your_date: 0
+						})
+					}
+				} else {
+					this.data_date = dateJson;
+				}
+
+
+
+				const date_crm = this.date_crm
+
+				if( date_crm.your_date !== 0 && date_crm.your_month !== 0 && date_crm.your_year !== 0 ) {
 
 					// SET USER AGE
 					const todayDate = new Date()
-					const birthDate = new Date(`${this.form_birth.your_year}-${this.form_birth.your_month}-${this.form_birth.your_date}`)
-					
-					this.userAge = todayDate.getFullYear() - birthDate.getFullYear()
+					const birthDate = new Date(`${date_crm.your_year}-${date_crm.your_month}-${date_crm.your_date}`)
+
+					this.user_age = todayDate.getFullYear() - birthDate.getFullYear()
 
 					var medianMonth = todayDate.getMonth() - birthDate.getMonth()
 					if (medianMonth < 0 || (medianMonth === 0 && todayDate.getDate() < birthDate.getDate())) {
-						this.userAge--
+						this.user_age--
 					}
 
 					// WIZARD INVALID TRUE
-					this.birthInvalid = false
+					this.birth_invalid = false
 					this.datawizard.isDone = true
 				} else {
 					// SET USER AGE
-					this.userAge = 0
+					this.user_age = 0
 
 					// WIZARD INVALID FALSE
-					this.birthInvalid = true
+					this.birth_invalid = true
 					this.datawizard.isDone = false
 				}
 			},
 			submitBirth(e) {
-				if( this.birthInvalid === false ) {
+				if( this.birth_invalid === false ) {
 					this.$emit("step", this.datawizard);
 				}
-
-				return false
 			}
+		},
+		created() {
+			// SET DEFAULT CHOOSEN PACKAGE
+			store.commit('setCRM', {
+				your_date: 0,
+				your_month: 0,
+				your_year: 0
+			})
 		},
 	}
 </script>
@@ -112,7 +157,18 @@
 		@apply pr-126px;
 	}
 
-	.wizard-sidebar {
+	.form-group-fieldset {
+
+		legend {
+			@apply px-8px;
+		}
+	}
+
+	.field-item {
+		@apply w-1/3;
+	}
+
+	.box-sidebar {
 		@apply py-40px px-32px;
 
 		.cta-submit-wizard {

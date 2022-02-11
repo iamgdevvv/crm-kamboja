@@ -8,9 +8,6 @@
 			<div class="body-wizard-content">
 			</div>
 		</article>
-		<aside class="wizard-sidebar">
-			<button class="cta-submit-wizard" :class="{ 'prevent-submit':wizardInvalid }" @click.prevent="submitSuccess">Selanjutnya</button>
-		</aside>
 	</section>
 </template>
 
@@ -29,12 +26,12 @@
 					your_month: '',
 					your_year: '',
 				},
-				wizardInvalid: true
+				wizard_invalid: true
 			}
 		},
 		methods: {
 			submitSuccess(e) {
-				if( this.wizardInvalid ) {
+				if( this.wizard_invalid ) {
 					return false
 				}
 

@@ -63,7 +63,7 @@
 		}
 
 		.nav-wizard__button-icon {
-			@apply bg-white border-gray-300 text-gray-300;
+			@apply text-18px bg-white border-gray-300 text-gray-300;
 		}
 	}
 
@@ -71,7 +71,9 @@
 		@apply relative z-2 flex flex-col items-center;
 
 		.nav-wizard__button-icon {
-			@apply flexs justify-center font-bold text-white leading-none w-51px h-51px border-2 rounded-full border-green-400 bg-green-400 transition duration-300;
+			@apply flexs justify-center text-0px font-bold text-white leading-none w-51px h-51px border-2 rounded-full bg-center bg-no-repeat border-green-400 bg-green-400 transition duration-300;
+			background-size: 22px auto, contain;
+			background-image: url(/assets/icons/icon-checkwhite-thick.svg);
 		}
 
 		.nav-wizard__button-label {
@@ -82,7 +84,7 @@
 	.wizard__active .nav-wizard__button {
 
 		.nav-wizard__button-icon {
-			@apply bg-white text-green-400 border-green-400;
+			@apply text-18px bg-white text-green-400 border-green-400;
 		}
 
 		.nav-wizard__button-label {

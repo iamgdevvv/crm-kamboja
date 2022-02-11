@@ -27,7 +27,14 @@ export default {
 					500: '#d23574'
 				},
 				green: {
+					50: '#e7ffee',
 					400: '#4bac60'
+				},
+				yellow: {
+					400: '#f5be34'
+				},
+				fuchsia: {
+					600: '#b44198',
 				},
 				cyan: {
 					400: '#2dc6df'
@@ -37,7 +44,13 @@ export default {
 	},
 	shortcuts: {
 		'flexs': 'flex flex-row flex-wrap items-center',
-		'cta-fill-pinks' : 'flex items-center justify-center text-18px py-18px px-20px border border-pink-500 rounded-10px bg-pink-500 text-white transition duration-300 hover:after:(translate-x-3px) after:(content-a text-0px inline-block w-10px h-18px ml-14px bg-contain bg-no-repeat bg-center transform-gpu transition duration-300)',
+		'flexs-center': 'flexs justify-center',
+		'cta': 'flex items-center justify-center text-18px py-18px px-16px border rounded-10px transition duration-300',
+		'cta-primary' : 'cta border-pink-500 bg-pink-500 text-white',
+		'cta-secondary' : 'cta border-gray-300',
+		'cta-icon' : 'after:(content-a text-0px inline-block w-10px h-16px mt-1px bg-contain bg-no-repeat bg-center transform-gpu transition duration-300)',
+		'cta-iconright' : 'cta-icon after:ml-12px hover:after:(translate-x-3px) after:order-last',
+		'cta-iconleft' : 'cta-icon after:mr-12px hover:after:(-translate-x-3px) after:order-first',
 	},
 	corePlugins: {
 		outline: false

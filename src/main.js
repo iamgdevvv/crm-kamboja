@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { store } from './stores'
 import App from './App.vue'
 import VeeValidatePlugin from './plugins/validation'
 import vSelect from 'vue-select'
@@ -8,7 +9,9 @@ import './main.css'
 
 const app = createApp(App)
 
-app.use(VeeValidatePlugin)
+//app.use(VeeValidatePlugin)
+
+app.use(store)
 
 app.component('v-select', vSelect)
 
