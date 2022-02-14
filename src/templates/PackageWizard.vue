@@ -6,7 +6,7 @@
 		<article class="wizard-content">
 			<ul v-if="dataPackages.length" class="options-package">
 				<li v-for="data in dataPackages" :key="data.value" class="option-package">
-					<div class="package-box" :class="{ 'package--selected':packageSelected(data.value) }">
+					<div class="package-box" :class="{ 'package--selected':packageSelected(data.value), 'package--popular':data.popular }">
 						<input v-model="form_package.your_package" type="radio" :value="data.value" @click="setPackage(data)">
 						<div class="package-branding">
 							<div class="package-name">
@@ -30,7 +30,7 @@
 			</ul>
 		</article>
 		<aside class="wizard-sidebar">
-			<BoxPackage className="box-sidebar" :package="choosen_package" :wizard="datawizard" @prev="prevWizard" @submit="submitPackage" />
+			<BoxPackage className="box-sidebar" :wizard="datawizard" @prev="prevWizard" @submit="submitPackage" />
 		</aside>
 	</section>
 </template>
@@ -108,7 +108,6 @@
 						popular: false
 					},
 				],
-				choosen_package: {},
 				form_package: {
 					your_package: 'paket-aman',
 				},
@@ -144,7 +143,8 @@
 	}
 
 	.wizard-content {
-		@apply pr-52px;
+		@apply @xl:(pr-40px);
+		@apply xl:(pr-52px);
 	}
 
 	.options-package {
@@ -156,8 +156,10 @@
 	}
 
 	.package-box {
-		@apply relative flexs w-full py-30px pl-38px pr-20px border-2 border-gray-200 rounded-10px transition duration-300;
+		@apply relative flexs w-full border-2 border-gray-200 rounded-10px transition duration-300;
 		@apply after:(content-a text-0px absolute top-12px right-12px w-16px h-16px border-2 border-white bg-white rounded-full shadow-gray-300 transition duration-300);
+		@apply <md:(p-20px);
+		@apply md:(py-30px pl-38px pr-20px);
 
 		&:after {
 			box-shadow: 0 0 0 1px var(--tw-shadow-color);
@@ -165,6 +167,10 @@
 
 		&:hover, &.package--selected {
 			@apply border-pink-500;
+		}
+
+		&.package--popular {
+			@apply <md:(pt-50px);
 		}
 
 		&.package--selected:after {
@@ -187,16 +193,18 @@
 		}
 
 		.package-branding {
-			@apply w-5/12 pr-18px;
+			@apply <md:(w-full);
+			@apply md:(w-5/12 pr-18px);
 		}
 
 		.package-info {
-			@apply w-7/12;
+			@apply <md:(w-full mt-28px);
+			@apply md:(w-7/12);
 		}
 	}
 
 	.package-branding {
-		@apply flexs;
+		@apply flexs flex-col items-start;
 
 		.package-name {
 			@apply flexs items-center;
@@ -219,7 +227,7 @@
 		}
 
 		.price-package {
-			@apply block mt-10px text-35px font-bold;
+			@apply block mt-10px text-35px font-bold break-all;
 		}
 	}
 
@@ -228,7 +236,7 @@
 
 		li {
 			@apply relative block pl-36px first-letter:capitalize not-first:mt-16px;
-			@apply before:(content-a text-0px absolute top-0 left-0 w-24px h-24px bg-white border-2 border-gray-300 rounded-full bg-center bg-no-repeat transition duration-300);
+			@apply before:(content-a text-0px absolute top-2px left-0 w-24px h-24px bg-white border-2 border-gray-300 rounded-full bg-center bg-no-repeat transition duration-300);
 
 			&::before {
 				background-size: 10px auto, contain;

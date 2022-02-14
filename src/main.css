@@ -254,15 +254,17 @@ input[type="date"]::-webkit-clear-button {
 
 input[type="radio"],
 input[type="checkbox"] {
-	@apply inline-block w-20px h-20px p-0 cursor-pointer;
+	@apply inline-block w-24px h-24px p-0 cursor-pointer;
 }
 
 input[type="checkbox"] {
-	@apply rounded;
+	@apply rounded border-pink-500 bg-transparent bg-center bg-no-repeat;
+	background-size: 17px auto, contain;
 }
 
 input[type="checkbox"]:checked {
-	@apply bg-green-400;
+	@apply bg-pink-500;
+	background-image: url(/assets/icons/icon-checkwhite-thick.svg);
 }
 
 input[type="radio"] {
@@ -319,19 +321,48 @@ select {
 
 /* STYLE FORM */
 label, legend {
-	@apply block w-full mb-10px text-16px;
+	@apply block w-full mb-10px text-16px leading-relaxed;
+
+	&[for] {
+		@apply cursor-pointer;
+	}
 }
 
 .icon-required {
 	@apply text-pink-500;
 }
 
+.icon-opsional {
+	@apply text-14px text-gray-500;
+}
+
 .form-group {
-	@apply flexs -mx-8px -mb-30px;
+	@apply flexs;
+	@apply <md:(-mb-20px);
+	@apply md:(-mx-8px -mb-30px);
 }
 
 .field-item {
-	@apply w-full px-8px mb-30px;
+	@apply w-full;
+	@apply <md:(mb-20px);
+	@apply md:(px-8px mb-30px);
+}
+
+.form-group-checkbox,
+.form-group-radio {
+
+	.field-item {
+		@apply flexs items-start;
+	}
+
+	input {
+		@apply mt-4px;
+	}
+
+	label {
+		@apply pl-15px mb-0;
+		width: calc(100% - 24px);
+	}
 }
 
 
@@ -348,7 +379,7 @@ label, legend {
 
 		.vs__selected-options {
 			.vs__selected {
-				@apply text-gray-500;
+				@apply text-pink-500;
 			}
 		}
 
@@ -401,7 +432,7 @@ label, legend {
 	}
 
 	.vs__dropdown-menu {
-		@apply p-0 border-none rounded-5px;
+		@apply max-h-200px p-0 border-none rounded-5px;
 		top: calc(100% + 8px);
 		box-shadow: 0 0 16px rgba(0,0,0,.12);
 

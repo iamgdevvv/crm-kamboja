@@ -1,5 +1,5 @@
 <template>
-	<div class="box-package box-sidebar">
+	<div class="box-package" :class="className">
 		<div class="package-branding">
 			<span class="package-labelchoosen">Paket yang dipilih:</span>
 			<div class="package-name">
@@ -8,7 +8,7 @@
 			</div>
 		</div>
 		<div class="package-detail">
-			<span class="label-estimate-package">Estimasi Biaya Proteksi</span>
+			<Info>Estimasi Biaya Proteksi</Info>
 			<span class="estimate-package">
 				<span class="price-estimate">{{ this.package?.currency.iso }} {{ this.package?.instalment_monthly.toLocaleString(this.package?.currency.locale) }}</span>
 				<span class="suffix-price-estimate">/bulan</span>
@@ -22,7 +22,7 @@
 			</ul>
 			<div class="package-action">
 				<button class="cta-prev-wizard" @click.prevent="prevPackage">Kembali</button>
-				<button class="cta-submit-wizard" :class="{ 'prevent-submit':packageInvalid }" @click.prevent="submitPackage">Selanjutnya</button>
+				<button class="cta-submit-wizard" :class="{ 'prevent-submit':packageInvalid }" @click.prevent="submitPackage">{{ labelNext }}</button>
 			</div>
 		</div>
 		<div class="payment-info">
@@ -35,11 +35,16 @@
 <script>
 	import Image from './Image.vue'
 	import LogoPayments from './LogoPayments.vue'
+	import Info from './Info.vue'
 
 	export default {
 		name: 'BoxPackage',
 		props: {
 			wizard: Object,
+			labelNext: {
+				type: String,
+				default: 'Selanjutnya'
+			},
 			className: String
 		},
 		computed: {
@@ -49,7 +54,8 @@
 		},
 		components: {
 			Image,
-			LogoPayments
+			LogoPayments,
+			Info
 		},
 		methods: {
 			prevPackage() {
@@ -63,12 +69,16 @@
 </script>
 
 <style scoped>
+	.box-sidebar {
+		@apply sticky top-20px;
+	}
+
 	.package-labelchoosen {
 		@apply inline-block mr-8px;
 	}
 
 	.package-branding {
-		@apply flexs justify-center p-20px border-b border-gray-300;
+		@apply flexs justify-center py-20px px-4px border-b border-gray-300;
 
 		.package-name {
 			@apply flexs items-center;
@@ -84,11 +94,11 @@
 	}
 
 	.package-info {
-		@apply px-2px pl-0 list-none;
+		@apply px-2px pl-0 text-14px leading-relaxed list-none;
 
 		li {
-			@apply relative block pl-26px pt-2px text-14px first-letter:capitalize not-first:mt-16px;
-			@apply before:(content-a text-0px absolute top-0 left-0 w-16px h-16px bg-white border-2 border-gray-300 rounded-full bg-center bg-no-repeat transition duration-300);
+			@apply relative block pl-26px first-letter:capitalize not-first:mt-10px;
+			@apply before:(content-a text-0px absolute top-2px left-0 w-16px h-16px bg-white border-2 border-gray-300 rounded-full bg-center bg-no-repeat transition duration-300);
 
 			&::before {
 				background-size: 8px auto, contain;
@@ -110,34 +120,33 @@
 
 		.cta-prev-wizard {
 			width: calc(45% - 10px);
+			@apply <md:(w-full);
 		}
 
 		.cta-submit-wizard {
 			width: 55%;
+			@apply <md:(w-full mt-10px);
 		}
-	}
-
-	.payment-info {
-		@apply px-30px pt-20px pb-26px border-t border-gray-300;
 	}
 
 	.package-detail {
-		@apply flex flex-col items-center pt-32px pb-40px px-30px;
-	}
+		@apply flex flex-col items-center;
+		@apply <xl:(px-20px py-30px);
+		@apply xl:(pt-32px pb-40px px-30px);
 
-	.payment-info {
-		
-		.label-payment-info {
-			@apply block mb-20px text-16px text-center;
+		.info-text {
+			@apply text-14px font-bold mb-20px;
+			@apply before:(-top-1px);
 		}
 	}
 
-	.label-estimate-package {
-		@apply relative inline-block pl-28px mb-20px text-14px font-bold text-yellow-400;
-		@apply before:(content-a absolute -top-3px left-0 inline-block w-18px h-18px text-0px bg-no-repeat bg-contain bg-center);
+	.payment-info {
+		@apply border-t border-gray-300;
+		@apply <xl:(px-20px py-30px);
+		@apply xl:(px-30px pt-20px pb-26px);
 
-		&:before {
-			background-image: url(/assets/icons/icon-infoyellow.svg);
+		.label-payment-info {
+			@apply block mb-20px text-16px text-center;
 		}
 	}
 

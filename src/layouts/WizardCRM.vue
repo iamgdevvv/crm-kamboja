@@ -94,13 +94,15 @@
 
 <style scoped>
 	.entry-wizard-wrapper {
-		@apply relative w-full mt-50px;
+		@apply relative overflow-visible w-full mt-50px;
+		min-height: 50vh;
 	}
 	:deep(.entry-wizard) {
-		@apply absolute top-0 left-0 w-full opacity-0 visibility-hidden pointer-events-none transform-gpu translate-y-12 transition duration-600;
+		@apply absolute top-0 left-0 w-full opacity-0 invisible pointer-events-none transform-gpu scale-0;
+		transition: opacity .6s;
 
 		&.entry-wizard__active {
-			@apply static opacity-100 visibility-visible pointer-events-auto translate-y-0;
+			@apply static opacity-100 visible pointer-events-auto scale-100;
 		}
 	}
 
@@ -113,15 +115,17 @@
 	}
 
 	:deep(.entry-wizard) {
-		@apply flexs items-start;		
+		@apply flexs items-stretch;		
 	}
 
 	:deep(.wizard-content) {
 		width: calc(100% - 360px);
+		@apply <xl:(w-full);
 	}
 
 	:deep(.wizard-sidebar) {
-		@apply w-360px;
+		@apply <xl:(w-full mt-40px);
+		@apply xl:(w-360px);
 	}
 
 	:deep(.box-sidebar) {
