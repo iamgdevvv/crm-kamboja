@@ -17,14 +17,14 @@
 </template>
 
 <script>
-import WizardCRM from './layouts/WizardCRM.vue'
+	import WizardCRM from './layouts/WizardCRM.vue'
 
-export default {
-	name: 'App',
-	components: {
-    WizardCRM
-}
-}
+	export default {
+		name: 'App',
+		components: {
+			WizardCRM
+		}
+	}
 </script>
 
 <style scoped>

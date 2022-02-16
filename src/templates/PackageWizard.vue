@@ -6,7 +6,7 @@
 		<article class="wizard-content">
 			<ul v-if="dataPackages.length" class="options-package">
 				<li v-for="data in dataPackages" :key="data.value" class="option-package">
-					<div class="package-box" :class="{ 'package--selected':packageSelected(data.value), 'package--popular':data.popular }">
+					<div class="package-box" :class="{ 'package--selected':(form_package.your_package === data.value), 'package--popular':data.popular }">
 						<input v-model="form_package.your_package" type="radio" :value="data.value" @click="setPackage(data)">
 						<div class="package-branding">
 							<div class="package-name">
@@ -30,7 +30,7 @@
 			</ul>
 		</article>
 		<aside class="wizard-sidebar">
-			<BoxPackage className="box-sidebar" :wizard="datawizard" @prev="prevWizard" @submit="submitPackage" />
+			<BoxPackage className="box-sidebar" :wizard="datawizard" :submit-invalid="form_package_invalid" @prev="prevWizard" @submit="submitPackage" />
 		</aside>
 	</section>
 </template>
@@ -38,6 +38,7 @@
 
 <script>
 	import { store } from '../stores'
+	import packageKamboja from '../data/package-kamboja.json'
 	import BoxPackage from '../components/BoxPackage.vue'
 	import Image from '../components/Image.vue'
 
@@ -45,6 +46,7 @@
 		name: 'PackageWizard',
 		props: {
 			datawizard: Object,
+			defaultPackage: String,
 			className: String
 		},
 		components: {
@@ -53,75 +55,20 @@
 		},
 		data() {
 			return {
-				dataPackages: [
-					{
-						value: 'paket-aman',
-						label: 'Aman',
-						icon: '/assets/icons/icon-amanblack.svg',
-						currency: {
-							label: 'Rp',
-							iso: 'IDR',
-							locale: 'id-ID'
-						},
-						price: 25_000_000,
-						instalment_monthly: 38_000,
-						features: [
-							'transportasi-jenazah',
-						],
-						popular: false
-					},
-					{
-						value: 'paket-nyaman',
-						label: 'nyaman',
-						icon: '/assets/icons/icon-nyamanblack.svg',
-						currency: {
-							label: 'Rp',
-							iso: 'IDR',
-							locale: 'id-ID'
-						},
-						price: 50_000_000,
-						instalment_monthly: 68_000,
-						features: [
-							'transportasi-jenazah',
-							'rumah-duka',
-							'akte-kematian',
-						],
-						popular: true
-					},
-					{
-						value: 'paket-tentram',
-						label: 'tentram',
-						icon: '/assets/icons/icon-tentramblack.svg',
-						currency: {
-							label: 'Rp',
-							iso: 'IDR',
-							locale: 'id-ID'
-						},
-						price: 100_000_000,
-						instalment_monthly: 88_000,
-						features: [
-							'transportasi-jenazah',
-							'rumah-duka',
-							'akte-kematian',
-							'reservasi-tpu-tps'
-						],
-						popular: false
-					},
-				],
+				dataPackages: packageKamboja,
 				form_package: {
-					your_package: 'paket-aman',
+					your_package: '',
 				},
+				form_package_invalid: true,	
 			}
 		},
 		methods: {
-			packageSelected(value) {
-				return this.form_package.your_package === value
-			},
 			setPackage(data) {
 				store.commit('choosePackage', data)
 				store.commit('setCRM', {
 					your_package: data.value
 				})
+				this.form_package_invalid = false
 			},
 			prevWizard() {
 				this.$emit('stepPrev', this.datawizard)
@@ -132,7 +79,19 @@
 		},
 		created() {
 			// SET DEFAULT CHOOSEN PACKAGE
-			store.commit('choosePackage', this.dataPackages[0])
+			const defaultPackage = this.defaultPackage
+			if( defaultPackage !== '' && defaultPackage !== undefined ) {
+				const choosenPackage = this.dataPackages.find(item => item.value === defaultPackage)
+
+				if( choosenPackage instanceof Object && choosenPackage?.value ) {
+					store.commit('choosePackage', choosenPackage)
+					this.form_package.your_package = defaultPackage
+					store.commit('setCRM', {
+						your_package: defaultPackage
+					})
+					this.form_package_invalid = false
+				}
+			}
 		},
 	}
 </script>

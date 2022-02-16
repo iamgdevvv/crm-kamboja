@@ -35,6 +35,10 @@
 							<label>No.Handphone <span class="icon-required">*</span></label>
 							<input v-model="form_identity.your_tel" type="tel" @change="updateField(form_identity.your_tel, 'your_tel')" />
 						</div>
+						<div class="field-item">
+							<label>Nama Kepala Keluarga <span class="icon-opsional">(sesuai dengan Kartu Keluarga)</span></label>
+							<input v-model="form_identity.your_name_head_family" type="text" @change="updateField(form_identity.your_name_head_family, 'your_name_heir')" />
+						</div>
 					</div>
 				</div>
 			</section>
@@ -239,15 +243,17 @@
 		</article>
 		<aside class="wizard-sidebar">
 			<span class="info-personal">Data pribadi Anda disimpan sesuai dengan undang-undang negara</span>
-			<BoxPackage labelNext="Kirim Form" className="box-sidebar" :wizard="datawizard" @prev="prevWizard" @submit="submitPackage" />
+			<BoxPackage label-next="Kirim Form" className="box-sidebar" :submit-invalid="form_identity_validation" :wizard="datawizard" @prev="prevWizard" @submit="openPopupValidate" />
 		</aside>
 	</section>
+	<PopupValidate :state-toggle="toggle_popup" @closePopup="closePopupValidate" @submitPopup="submitPackage" />
 </template>
 
 
 <script>
 	import { store } from '../stores'
 	import BoxPackage from '../components/BoxPackage.vue'
+	import PopupValidate from './PopupValidate.vue'
 	import Image from '../components/Image.vue'
 	import Info from '../components/Info.vue'
 
@@ -260,12 +266,13 @@
 		computed: {
 			dataCRM() {
 				return this.$store.state.data_crm
-			}
+			},
 		},
 		components: {
 			BoxPackage,
 			Image,
-			Info
+			Info,
+			PopupValidate
 		},
 		data() {
 			return {
@@ -276,6 +283,7 @@
 					your_ktp: '',
 					your_email: '',
 					your_tel: '',
+					your_name_head_family: '',
 					your_selfie: '',
 					your_ktp: '',
 					your_selfie_ktp: '',
@@ -329,7 +337,9 @@
 						value: '1-year',
 						label: '1 tahun (Potongan Harga 10%)'
 					}
-				]
+				],
+				form_identity_validation: false,
+				toggle_popup: false
 			}
 		},
 		methods: {
@@ -372,7 +382,14 @@
 			prevWizard() {
 				this.$emit('stepPrev', this.datawizard)
 			},
+			openPopupValidate() {
+				this.toggle_popup = true
+			},
+			closePopupValidate() {
+				this.toggle_popup = false
+			},
 			submitPackage() {
+				this.toggle_popup = false
 				this.$emit('step', this.datawizard)
 			}
 		},

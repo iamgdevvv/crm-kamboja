@@ -1,0 +1,55 @@
+[
+	{
+		"value": "paket-aman",
+		"label": "Aman",
+		"icon": "/assets/icons/icon-amanblack.svg",
+		"currency": {
+			"label": "Rp",
+			"iso": "IDR",
+			"locale": "id-ID"
+		},
+		"price": 25000000,
+		"instalment_monthly": 38000,
+		"features": [
+			"transportasi-jenazah"
+		],
+		"popular": false
+	},
+	{
+		"value": "paket-nyaman",
+		"label": "nyaman",
+		"icon": "/assets/icons/icon-nyamanblack.svg",
+		"currency": {
+			"label": "Rp",
+			"iso": "IDR",
+			"locale": "id-ID"
+		},
+		"price": 50000000,
+		"instalment_monthly": 68000,
+		"features": [
+			"transportasi-jenazah",
+			"rumah-duka",
+			"akte-kematian"
+		],
+		"popular": true
+	},
+	{
+		"value": "paket-tentram",
+		"label": "tentram",
+		"icon": "/assets/icons/icon-tentramblack.svg",
+		"currency": {
+			"label": "Rp",
+			"iso": "IDR",
+			"locale": "id-ID"
+		},
+		"price": 100000000,
+		"instalment_monthly": 88000,
+		"features": [
+			"transportasi-jenazah",
+			"rumah-duka",
+			"akte-kematian",
+			"reservasi-tpu-tps"
+		],
+		"popular": false
+	}
+]

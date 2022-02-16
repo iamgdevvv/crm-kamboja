@@ -53,14 +53,6 @@ export default {
 		'cta-iconright' : 'cta-icon after:ml-12px hover:after:(translate-x-3px) after:order-last',
 		'cta-iconleft' : 'cta-icon after:mr-12px hover:after:(-translate-x-3px) after:order-first',
 	},
-	corePlugins: {
-		outline: false
-	},
-	variants: {
-		extend: {
-			outline: [],
-		},
-	},
 	plugins: [
 		require('windicss/plugin/line-clamp'),
 		require('windicss/plugin/aspect-ratio'),

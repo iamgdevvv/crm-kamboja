@@ -10,19 +10,19 @@
 		<div class="package-detail">
 			<Info>Estimasi Biaya Proteksi</Info>
 			<span class="estimate-package">
-				<span class="price-estimate">{{ this.package?.currency.iso }} {{ this.package?.instalment_monthly.toLocaleString(this.package?.currency.locale) }}</span>
+				<span class="price-estimate">{{ this.package?.currency?.iso }} {{ this.package?.instalment_monthly?.toLocaleString(this.package?.currency?.locale) }}</span>
 				<span class="suffix-price-estimate">/bulan</span>
 			</span>
 			<p class="info-estimate-package"><span class="required-info">*</span> Biaya proteksi diatas akan terindex setiap tahunnya menyesuaikan usia anda.</p>
 			<ul class="package-info">
-				<li :class="{ 'include-package': this.package?.features.includes('transportasi-jenazah') }">Pengurusan transportasi jenazah</li>
-				<li :class="{ 'include-package': this.package?.features.includes('rumah-duka') }">Pengurusan rumah duka</li>
-				<li :class="{ 'include-package': this.package?.features.includes('akte-kematian') }">Pengurusan akte kematian</li>
-				<li :class="{ 'include-package': this.package?.features.includes('reservasi-tpu-tps') }">Reservasi tempat pemakaman (TPU/TPS)</li>
+				<li :class="{ 'include-package': this.package?.features?.includes('transportasi-jenazah') }">Pengurusan transportasi jenazah</li>
+				<li :class="{ 'include-package': this.package?.features?.includes('rumah-duka') }">Pengurusan rumah duka</li>
+				<li :class="{ 'include-package': this.package?.features?.includes('akte-kematian') }">Pengurusan akte kematian</li>
+				<li :class="{ 'include-package': this.package?.features?.includes('reservasi-tpu-tps') }">Reservasi tempat pemakaman (TPU/TPS)</li>
 			</ul>
 			<div class="package-action">
 				<button class="cta-prev-wizard" @click.prevent="prevPackage">Kembali</button>
-				<button class="cta-submit-wizard" :class="{ 'prevent-submit':packageInvalid }" @click.prevent="submitPackage">{{ labelNext }}</button>
+				<button class="cta-submit-wizard" :disabled="(submitInvalid === 'true' || submitInvalid === true || submitInvalid === 1)" @click.prevent="submitPackage">{{ labelNext }}</button>
 			</div>
 		</div>
 		<div class="payment-info">
@@ -45,6 +45,10 @@
 				type: String,
 				default: 'Selanjutnya'
 			},
+			submitInvalid: {
+				type: String,
+				default: true
+			},
 			className: String
 		},
 		computed: {
@@ -65,6 +69,9 @@
 				this.$emit('submit')
 			}
 		},
+		created() {
+			console.log(this.submitInvalid)
+		}
 	}
 </script>
 

@@ -1,11 +1,11 @@
 <template>
 	<NavWizard :datawizard="wizards" @step="wizardNav" />
-	<Form v-if="wizards.length" class="entry-wizard-wrapper">
+	<form v-if="wizards.length" class="entry-wizard-wrapper">
 		<BirthWizard :datawizard="wizards[0]" :className="{ 'entry-wizard__active':wizards[0].isActive }" @step="wizardStep" />
-		<PackageWizard :datawizard="wizards[1]" :className="{ 'entry-wizard__active':wizards[1].isActive }" @step="wizardStep" @stepPrev="wizardStepPrev" />
+		<PackageWizard default-package="paket-aman" :datawizard="wizards[1]" :className="{ 'entry-wizard__active':wizards[1].isActive }" @step="wizardStep" @stepPrev="wizardStepPrev" />
 		<IdentityWizard :datawizard="wizards[2]" :className="{ 'entry-wizard__active':wizards[2].isActive }" @step="wizardStep" @stepPrev="wizardStepPrev" />
 		<SuccessWizard :datawizard="wizards[3]" :className="{ 'entry-wizard__active':wizards[3].isActive }" @step="wizardStep" />
-	</Form>
+	</form>
 </template>
 
 <script>
@@ -65,6 +65,8 @@
 		},
 		methods: {
 			wizardNav(step) {
+				window.scrollTo(0,0)
+
 				const wizardCurrent = this.wizards.find(wizard => wizard.isActive)
 
 				if( step.id > wizardCurrent.id ) {
@@ -80,30 +82,36 @@
 				})
 			},
 			wizardStepPrev(step) {
+				window.scrollTo(0,0)
 				this.wizards[step.id].isActive = false
 				this.wizards[step.id - 1].isActive = true
 			},
 			wizardStep(step) {
+				window.scrollTo(0,0)
 				this.wizards[step.id].isDone = true
 				this.wizards[step.id].isActive = false
 				this.wizards[step.id + 1].isActive = true
+				console.log(this.wizards)
 			}
 		},
 	}
 </script>
 
-<style scoped>
-	.entry-wizard-wrapper {
-		@apply relative overflow-visible w-full mt-50px;
-		min-height: 50vh;
-	}
-	:deep(.entry-wizard) {
+<style>
+	.entry-wizard {
 		@apply absolute top-0 left-0 w-full opacity-0 invisible pointer-events-none transform-gpu scale-0;
 		transition: opacity .6s;
 
 		&.entry-wizard__active {
 			@apply static opacity-100 visible pointer-events-auto scale-100;
 		}
+	}
+</style>
+
+<style scoped>
+	.entry-wizard-wrapper {
+		@apply relative overflow-visible w-full mt-50px;
+		min-height: 50vh;
 	}
 
 	:deep(.header-wizard-content) {
@@ -149,11 +157,11 @@
 		background-image: url(/assets/icons/icon-chevronwhite-right.svg);
 	}
 
-	:deep(.cta-submit-wizard.prevent-submit) {
+	:deep(.cta-submit-wizard[disabled]) {
 		@apply border-gray-200 bg-gray-200 text-gray-500 cursor-not-allowed;
 	}
 
-	:deep(.cta-submit-wizard.prevent-submit:after) {
+	:deep(.cta-submit-wizard[disabled]:after) {
 		@apply translate-x-0;
 		background-image: url(/assets/icons/icon-chevrongray500-right.svg);
 	}
