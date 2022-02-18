@@ -22,6 +22,11 @@ It correctly bundles Vue in production mode and optimizes the build for the best
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed! see on [https://crm-kamboja.whellostudio.id/](https://crm-kamboja.whellostudio.id/)
 
+### `npm run preview`
+
+Runs the app preview after build.<br />
+Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
+
 ## Recommended IDE Setup
 
 - [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
